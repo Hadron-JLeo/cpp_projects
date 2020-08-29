@@ -5,38 +5,59 @@
 
 using namespace std;
 
+class Item;
+void Output_Crafting_Table();
+
 class Item
 {
     public:
         string name;
         int worth, damage, amount;
-        void Set_Values(string, int, int, int);
+        Item *RECIPE; 
+        void Set_Values(string, int, int, int, Item[3][3]);
     
     Item() {}
-    Item(string n, int w, int d, int a)
+    Item(string n, int w, int d, int a, Item R[3][3])
     {
         name = n;
         worth = w;
         damage = d;
         amount = a;
-        
+        RECIPE = *R;
     }
 };
 
-
-void Item::Set_Values(string n, int w, int d, int a)
+void Item::Set_Values(string n, int w, int d, int a, Item R[3][3])
 {
     name = n;
     worth = w;
     damage = d;
     amount = a;
+    RECIPE = *R;
 }
 
-Item empty = {"Empty", 0,0,0};
-Item stick = {"Stick", 2, 3, 1};
-Item cobblestone = {"Cobblestone", 1, 0, 1};
-Item wood = {"Wood", 5, 0, 1};
-Item stone_pick = {"Stone Pickaxe", 10, 5, 1}; // Stone Pickaxe. Consists of 2 sticks and 3 Cobblestone
+Item empty = {"Empty", 0,0,0, 0};
+
+Item EMPTY_TABLE [3][3] = 
+{
+    {empty, empty, empty},
+    {empty, empty, empty},
+    {empty, empty, empty}
+};
+
+Item stick = {"Stick", 2, 3, 1, 0};
+Item cobblestone = {"Cobblestone", 1, 0, 1, 0};
+Item wood = {"Wood", 5, 0, 1, 0};
+
+
+Item stone_pick_recipe[3][3] = 
+{
+    {cobblestone, cobblestone, cobblestone},
+    {empty, stick, empty},
+    {empty, stick, empty}
+};
+
+Item stone_pick = {"Stone Pickaxe", 10, 5, 1, stone_pick_recipe}; // Stone Pickaxe. Consists of 2 sticks and 3 Cobblestone
 // enum items {stick = "Stick", cobblestone = "Cobblestone", wood = "Wood"};
 
 map<string, Item> M_Item_Names = 
@@ -48,12 +69,9 @@ map<string, Item> M_Item_Names =
     {"empty", empty}
 };
 
-Item CRAFTING_TABLE [3][3] = 
-{
-    {empty, empty, empty},
-    {empty, empty, empty},
-    {empty, empty, empty}
-};
+
+
+Item CRAFTING_TABLE [3][3] = EMPTY_TABLE;
 
 
 
@@ -78,8 +96,11 @@ void U_Input()
     int x, y;
     cin >> name >> x >> y;
     Craft(Name_Comparator(name), x, y);
-    
+    Output_Crafting_Table();
+    cout << "\n";
 }
+
+
 void Init_Crafting_Table()
 {
     for (int i = 0; i < 2; i++)
@@ -118,7 +139,12 @@ int main()
   U_Input();
   U_Input();
   U_Input();
-  Output_Crafting_Table();
+  U_Input();
+  U_Input();
+  if (CRAFTING_TABLE == stone_pick_recipe)
+    {
+        cout << "Crafted a Stone Pickaxe!";  
+    }
   //U_Input();
   return 0;
 }
