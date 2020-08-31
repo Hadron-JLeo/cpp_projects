@@ -17,13 +17,17 @@ class Item():
 class Craftable_Item():
     
     my_item = None
-    my_recipe = [[None for x in range(3)] for y in range(3)]
+    recipe = [[None for x in range(3)] for y in range(3)]
+ 
 
-    print() 
 
-    def __init__(self, mi:Item, mr):
-        self.my_item = mi
-        self.my_recipe = mr
-    
+    def __init__(self, n:str, v:float, i:float, mr):
+        self.name = n
+        self.value = v
+        self.item_id = i
+        self.recipe = mr
+
+        # self.my_item = mi
+        
     def Output_Item(self):
         print(self.my_item)
