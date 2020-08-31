@@ -1,4 +1,4 @@
-import craftclasses as cc
+import classes as cc
 import items as i
 
 import numpy as np

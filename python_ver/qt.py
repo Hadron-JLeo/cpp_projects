@@ -2,7 +2,7 @@ import sys
 import numpy as np
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtWidgets import QApplication, QMainWindow, QToolButton
-import items 
+import items, pycraft
 
 
 
@@ -48,7 +48,7 @@ def Change_Button_Content(button, icon):
     #button.
     #craft_but_1_1.set
     #buttons[]
-    button.setIcon(QtGui.QIcon(items.cobble_icon))
+    button.setIcon(QtGui.QIcon(icon))
     button.setIconSize(QtCore.QSize(90,90))
 
     pass
@@ -57,27 +57,46 @@ def Button_Click(button=None, option=None):
 
     input_window = window.formFrame
     input_close_button = window.InputCloseButton
+    line_edit = window.lineEdit
 
     #print("clicked on a button")
 
     def Craft():
 
         last_clicked_but = button
-        
+        global last_index
+        last_index = deep_index(buttons, button)[0]
+        print(deep_index(buttons, button)[0])
         input_close_button.show()
         input_window.show()
-        Change_Button_Content(last_clicked_but,None)
+       # Change_Button_Content(last_clicked_but,None)
         
     def CloseInput():
         input_window.hide()
         window.InputCloseButton.hide()
+
+    def Input():
+        #print (deep_index(buttons, last_clicked_but))
+        print(last_index)
+        x, y = last_index
+        c_table = pycraft.crafting_table
+        item_input = line_edit.text()
+        print(item_input) # works
+        try:
+            c_table[x][y] = pycraft.item_dict.get(item_input.lower())
+            print (c_table[x][y])
+        except:
+            print("Item doesn't exist!")
+            CloseInput()
+        Change_Button_Content(buttons[x][y], c_table[x][y].icon)
 
     if option is not None:
         if option.lower() == "craft":
             Craft()
         if option.lower() == "closeinput":
             CloseInput()
-            #print("yada")
+        if option.lower() == "input":
+            Input()
         #print(option)
     else:
         print("Ya forgot to input an option, ya wanker!")
@@ -97,12 +116,13 @@ def Initialize_Window():
     window.formFrame.setEnabled(True)
     window.InputCloseButton.setEnabled(True)
     window.InputCloseButton.clicked.connect(lambda: Button_Click(0, option="CloseInput"))
+    window.EnterButton.clicked.connect(lambda: Button_Click(0, option="input"))
 
     window.formFrame.hide()
     window.InputCloseButton.hide()
     window.show()
 
-#Main
+pycraft.Start()
 Initialize_Window()
 Button_Comparator()
 #arr_output()
