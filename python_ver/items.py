@@ -1,5 +1,6 @@
 import classes as cc
 
+
 stone_pick_recipe = None
 
 
@@ -10,6 +11,8 @@ icon_path = r"C:\Users\Decetra\.vscode\Desktop\mr_stuff\GUI_stuff"
 cobble_icon = icon_path + r"\cobble.png"
 stick_icon = icon_path + r"\stick.png"
 stone_pick_icon = icon_path + r"\stone_pick.png"
+dia_icon = icon_path + r"\diamond.png"
+
 
 def short_declare():
     import recipes as r
@@ -25,10 +28,10 @@ crafting_table = [[None for x in range(3)] for y in range(3)]
 
 cobble = Item("Cobblestone", 1, 150, cobble_icon)
 stick = Item("Stick", 0.5, 152, stick_icon, True)
-diamond = Item("Diamond", 50, 200, False)
-empty = Item("#", 0, 0, False)
+diamond = Item("Diamond", 50, 200, dia_icon, False)
+empty = Item("#", 0, 0, None, False)
 
-stone_pick = C_Item("Stone Pickaxe", 15, 175,stone_pick_icon, stone_pick_recipe)
+stone_pick = C_Item("Stone Pickaxe", 15, 175,stone_pick_icon, short_declare())
 
 item_shortcuts = {
     "empty" : empty,

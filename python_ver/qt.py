@@ -2,6 +2,7 @@ import sys
 import numpy as np
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtWidgets import QApplication, QMainWindow, QToolButton
+from PyQt5.QtGui import QPixmap
 import items, pycraft
 
 
@@ -58,10 +59,11 @@ def Button_Click(button=None, option=None):
     input_window = window.formFrame
     input_close_button = window.InputCloseButton
     line_edit = window.lineEdit
+    c_table = pycraft.crafting_table
 
     #print("clicked on a button")
 
-    def Craft():
+    def CraftArray():
 
         last_clicked_but = button
         global last_index
@@ -79,24 +81,45 @@ def Button_Click(button=None, option=None):
         #print (deep_index(buttons, last_clicked_but))
         print(last_index)
         x, y = last_index
-        c_table = pycraft.crafting_table
+        
+        
         item_input = line_edit.text()
-        print(item_input) # works
+        print(item_input)
+
+        if (item_input.lower() is ("empty") or (not line_edit.text()) or None):
+            item_input = "empty" # Works
+            
+
+        print("Item to be input: ", item_input) # works
         try:
             c_table[x][y] = pycraft.item_dict.get(item_input.lower())
-            print (c_table[x][y])
+            print (c_table[x][y].name)
         except:
             print("Item doesn't exist!")
             CloseInput()
         Change_Button_Content(buttons[x][y], c_table[x][y].icon)
 
+
+    def CraftButton():
+        # Check if the array matches a recipe
+        print("pressed crafting button")
+        item = items.stone_pick
+        if np.array_equal(c_table, item.recipe):
+            print("Crafted a stone pickaxe!")
+            img = QPixmap(item.icon)
+            window.NewItemIcon.setPixmap(img)
+
+    # Options--
+
     if option is not None:
-        if option.lower() == "craft":
-            Craft()
+        if option.lower() == "craftarray":
+            CraftArray()
         if option.lower() == "closeinput":
             CloseInput()
         if option.lower() == "input":
             Input()
+        if option.lower() == "craftbutton":
+            CraftButton()
         #print(option)
     else:
         print("Ya forgot to input an option, ya wanker!")
@@ -108,7 +131,7 @@ def Button_Comparator(array=buttons):
     for y in range(3):
         for x in range(3):
             clicked_but : QtWidgets.QToolButton(parent=window) = buttons[x][y]
-            clicked_but.clicked.connect(lambda: Button_Click(clicked_but.sender(), "Craft"))
+            clicked_but.clicked.connect(lambda: Button_Click(clicked_but.sender(), "Craftarray"))
 
 
 def Initialize_Window():
@@ -117,6 +140,8 @@ def Initialize_Window():
     window.InputCloseButton.setEnabled(True)
     window.InputCloseButton.clicked.connect(lambda: Button_Click(0, option="CloseInput"))
     window.EnterButton.clicked.connect(lambda: Button_Click(0, option="input"))
+
+    window.craftButton.clicked.connect(lambda: Button_Click(0, option="Craftbutton"))
 
     window.formFrame.hide()
     window.InputCloseButton.hide()
@@ -130,4 +155,4 @@ Button_Comparator()
 #print(buttons[0][1], buttons[1][2], buttons[2][1])
 #print(buttons[1][0], buttons[2][1], buttons[0][2])
 sys.exit(app.exec_())
-k=input()
+#k=input()
